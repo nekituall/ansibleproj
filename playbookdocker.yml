@@ -1,0 +1,45 @@
+---
+
+- name: Prepare and install Docker
+  hosts: virtuals
+  become: True
+  tasks:
+   - name: Prepare yum
+     yum:
+      name:
+       - bash-completion.noarch
+       - yum-utils
+      state: present
+   - name: Add repository for docker
+     get_url:
+       url: https://download.docker.com/linux/centos/docker-ce.repo
+       dest: /etc/yum.repos.d/docker-ce.repo
+   - name: Install Docker engine
+     yum:
+      name:
+       - docker-ce
+       - docker-ce-cli
+       - containerd.io
+       - docker-buildx-plugin
+       - docker-compose-plugin
+      state: present
+   - name: Stop and disable firewalld to misconflict open ports
+     service:
+        name: firewalld
+        state: stopped
+        enabled: False
+     tags: firewalld    
+   - name: Start dockerd
+     systemd:
+      name: docker
+      state: started
+      enabled: True
+   - name: Verify version
+     shell:
+      cmd: docker --version
+     changed_when: False
+   - name: Add user tester to docker group
+     shell:
+      cmd: usermod -aG docker tester
+     changed_when: False      
+

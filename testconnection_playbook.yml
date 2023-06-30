@@ -1,0 +1,14 @@
+---
+
+- name: My first play
+  hosts: virtuals
+  vars:
+   addr: 8.8.8.8 #default
+  tasks:
+   - name: Ping my hosts
+     ansible.builtin.ping:
+   - name: Ping external resource (default is 8.8.8.8)
+     shell:
+      cmd: "ping -c 2 {{ addr }}"
+     register: result
+     changed_when: result.rc != 0
