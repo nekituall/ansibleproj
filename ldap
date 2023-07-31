@@ -9,3 +9,11 @@
         - slapd 
         - ldap-utils
        state: present
+   - name: Set admin passwd
+     community.general.ldap_entry:
+       dn: cn=admin,dc=test,dc=org
+       attributes:
+        description: An LDAP administrator
+        userPassword: "passw0rd"
+
+
