@@ -1,0 +1,11 @@
+---
+- name: Activate LDAP server
+  hosts: ubuntu
+  become: True
+  tasks:
+   - name: Install ldap
+     ansible.builtin.apt:
+       name: 
+        - slapd 
+        - ldap-utils
+       state: present
