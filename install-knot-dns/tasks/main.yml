@@ -1,0 +1,50 @@
+---
+- name: Prepare dnf
+  ansible.builtin.dnf:
+    name:
+      - dnf-command(copr)
+      - epel-release
+    state: present
+- name: Install knot
+  ansible.builtin.dnf:
+    name:
+      - knot
+      - knot-utils
+    state: present
+  when: ansible_os_family == "RedHat"
+- name: Create dir for zones
+  ansible.builtin.file:
+    path: /var/lib/knot/zones/
+    state: directory
+    owner: "{{ knot_user }}"
+    group: "{{ knot_group }}"
+    mode: '0755'
+
+- name: Copy zone files
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: /var/lib/knot/zones/
+    owner: "{{ knot_user }}"
+    group: "{{ knot_group }}"
+    mode: '0644'
+  with_fileglob: "./*"
+  notify: restart knot
+  tags: zones
+- name: Configure knot
+  ansible.builtin.template:
+    src: knot.conf.j2
+    dest: /etc/knot/knot.conf
+    mode: '0644'
+    lstrip_blocks: true
+    owner: "{{ knot_user }}"
+    group: "{{ knot_group }}"
+    validate: knotc -c %s conf-check
+  notify: restart knot
+  tags: config
+  
+- name: Enable knot
+  ansible.builtin.service:
+    name: knot
+    enabled: yes
+    state: started
+

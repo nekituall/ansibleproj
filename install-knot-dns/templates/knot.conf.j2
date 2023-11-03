@@ -1,0 +1,29 @@
+# Server options
+server:
+  rundir: /var/run/knot
+  user: {{ knot_user }}:{{ knot_group }}
+  listen: {{ ansible_default_ipv4.address }}@53
+
+# Template lists
+template:
+  - id: basic
+    file: /var/lib/knot/zones/basic.zone
+  - id: din_test
+    file: /var/lib/knot/zones/din_test.zone
+
+# Zone lists
+zone:
+
+{% for template in zones.templates %}
+{% for domain in template.domains %}
+  - domain: {{ domain.encode('idna') }} {{- domain.encode('idna') is match('xn--') | ternary(' # ' + domain,'') }}
+    template: {{ template.name }}
+    
+{% endfor %}
+{% endfor %}
+
+
+# Log 
+log:
+  - target: syslog
+    any: info

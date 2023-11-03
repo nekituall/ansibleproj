@@ -1,0 +1,9 @@
+zones:
+  templates:
+    - name: basic
+      domains:
+        - test.ru
+        - тест.рф
+    - name: din_test
+      domains:
+        - testdin.ru

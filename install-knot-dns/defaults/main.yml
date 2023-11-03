@@ -1,0 +1,8 @@
+---
+## Installation options
+knot_user: knot
+knot_group: knot
+## Configuration options
+knot_zones:
+  - { name: 'test.ru.', file: 'basic.zone' }
+  - { name: 'test_din.ru.', file: 'basic.zone' }

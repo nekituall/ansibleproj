@@ -1,0 +1,14 @@
+$TTL	3600
+@	IN	SOA	ns4.testdin.ru.	support.testdin.ru. (
+                            2         ; Serial
+                         3600           ; Refresh
+                          900           ; Retry
+                        3600000         ; Expire
+                         3600 ) ; Negative Cache TTL
+                         
+;NS
+	IN	NS	ns4.testdin.ru.
+	IN	NS	ns5.testdin.ru.
+
+;A
+@	IN	A	192.192.192.192
